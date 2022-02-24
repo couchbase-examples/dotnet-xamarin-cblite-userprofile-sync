@@ -7,15 +7,29 @@ using UserProfileDemo.Core.Respositories;
 using UserProfileDemo.Core.Services;
 using UserProfileDemo.Models;
 
+using Xamarin.Essentials;
+
 namespace UserProfileDemo.Core.ViewModels
 {
     public class UserProfileViewModel : BaseNavigationViewModel
     {
-        IUserProfileRepository UserProfileRepository { get; set; }
-        IAlertService AlertService { get; set; }
-        IMediaService MediaService { get; set; }
-
-        string UserProfileDocId => $"user::{AppInstance.User.Username}";
+        private readonly IUserProfileRepository _userProfileRepository;
+        private readonly IAlertService _alertService;
+        private readonly IMediaService _mediaService;
+        string UserProfileDocId
+        {
+            get
+            {
+                if (AppInstance.User != null)
+                {
+                    return $"user::{AppInstance.User.Username}";
+                }
+                else
+                {
+                    return $"user::";
+                }
+            }
+        }
 
         string _name;
         public string Name
@@ -59,7 +73,7 @@ namespace UserProfileDemo.Core.ViewModels
             {
                 if (_saveCommand == null)
                 {
-                    _saveCommand = new Command(async() => await Save());
+                    _saveCommand = new Command(async () => await Save());
                 }
 
                 return _saveCommand;
@@ -108,83 +122,85 @@ namespace UserProfileDemo.Core.ViewModels
             }
         }
 
-        public UserProfileViewModel(INavigationService navigationService, 
+        public UserProfileViewModel(INavigationService navigationService,
                                     IUserProfileRepository userProfileRepository,
                                     IAlertService alertService,
                                     IMediaService mediaService) : base(navigationService)
         {
-            UserProfileRepository = userProfileRepository;
-
-            AlertService = alertService;
-            MediaService = mediaService;
+            _userProfileRepository = userProfileRepository;
+            _alertService = alertService;
+            _mediaService = mediaService;
         }
 
-        public override async Task InitAsync()
+        public override async Task LoadAsync(bool refresh)
+        {
+            await LoadUserProfile();
+        }
+
+        public async Task LoadUserProfile()
         {
             IsBusy = true;
 
-            await UserProfileRepository.StartReplicationForCurrentUser().ConfigureAwait(false);
+            await _userProfileRepository.StartReplicationForCurrentUser().ConfigureAwait(false);
 
-            var userProfile = await Task.Run(async () =>
+            if (string.IsNullOrEmpty(Email))
             {
-                var up = await UserProfileRepository?.GetAsync(UserProfileDocId, UpdateUserProfile);
+                var userProfile = await _userProfileRepository?.GetAsync(UserProfileDocId, UpdateUserProfile);
 
-                if (up == null)
+                if (userProfile == null)
                 {
-                    up = new UserProfile
+                    userProfile = new UserProfile
                     {
                         Id = UserProfileDocId,
                         Email = AppInstance.User.Username
                     };
                 }
 
-                return up;
-            });
-
-            if (userProfile != null)
-            {
                 UpdateUserProfile(userProfile);
             }
 
             IsBusy = false;
         }
 
-        void UpdateUserProfile(UserProfile userProfile)
+        private void UpdateUserProfile(UserProfile userProfile)
         {
-            Name = userProfile.Name;
-            Email = userProfile.Email;
-            Address = userProfile.Address;
-            ImageData = userProfile.ImageData;
-            University = userProfile.University;
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                Name = userProfile.Name;
+                Email = userProfile.Email;
+                Address = userProfile.Address;
+                ImageData = userProfile.ImageData;
+                University = userProfile.University;
+            });
         }
 
-        async Task Save()
+        private async Task Save()
         {
             var userProfile = new UserProfile
             {
                 Id = UserProfileDocId,
                 Name = Name,
                 Email = Email,
-                Address = Address, 
-                ImageData = ImageData,  
+                Address = Address,
+                ImageData = ImageData,
                 University = University
             };
-   
-            var success = await UserProfileRepository.SaveAsync(userProfile).ConfigureAwait(false);
+
+            var success = await _userProfileRepository.SaveAsync(userProfile).ConfigureAwait(false);
 
             if (success)
             {
-                await AlertService.ShowMessage(null, "Successfully updated profile!", "OK");
+                await _alertService.ShowMessage(null, "Successfully updated profile!", "OK");
             }
             else
             {
-                await AlertService.ShowMessage(null, "Error updating profile!", "OK");
+                await _alertService.ShowMessage(null, "Error updating profile!", "OK");
             }
         }
 
-        async Task SelectImage()
+        private async Task SelectImage()
         {
-            var imageData = await MediaService.PickPhotoAsync();
+            var imageData = await _mediaService.PickPhotoAsync();
 
             if (imageData != null)
             {
@@ -192,7 +208,7 @@ namespace UserProfileDemo.Core.ViewModels
             }
         }
 
-        Task NavigateToUniversities()
+        private Task NavigateToUniversities()
         {
             var vm = ServiceContainer.GetInstance<UniversitiesViewModel>();
 
@@ -201,11 +217,11 @@ namespace UserProfileDemo.Core.ViewModels
             return Navigation.PushAsync(vm);
         }
 
-        void UniversitySelected(string name) => University = name;
+        private void UniversitySelected(string name) => University = name;
 
-        void Logout()
+        private void Logout()
         {
-            UserProfileRepository.Dispose();
+            _userProfileRepository.Dispose();
 
             AppInstance.User = null;
 

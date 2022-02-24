@@ -11,9 +11,8 @@ namespace UserProfileDemo.Core.ViewModels
 {
     public class UniversitiesViewModel : BaseNavigationViewModel
     {
+        private readonly IUniversityRepository _universityRepositorty;
         public Action<string> UniversitySelected { get; set; }
-
-        IUniversityRepository UniversityRepository { get; set; }
 
         string _name;
         public string Name
@@ -76,7 +75,7 @@ namespace UserProfileDemo.Core.ViewModels
         public UniversitiesViewModel(INavigationService navigationService,
                                      IUniversityRepository universityRepository) : base(navigationService)
         {
-            UniversityRepository = universityRepository;
+            _universityRepositorty = universityRepository;
         }
 
         Task SelectUniversity(University university)
@@ -89,7 +88,7 @@ namespace UserProfileDemo.Core.ViewModels
         {
             if (!string.IsNullOrEmpty(Name))
             {
-                Universities = await UniversityRepository.SearchByName(Name, Country);
+                Universities = await _universityRepositorty.SearchByName(Name, Country);
             }
         }
     }

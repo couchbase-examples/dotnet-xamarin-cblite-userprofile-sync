@@ -24,12 +24,10 @@ namespace UserProfileDemo
 
             RegisterServices();
 
-            /*
             MainPage = new LoginPage
             {
                 ViewModel = ServiceContainer.GetInstance<LoginViewModel>()
             };
-            */
 
             NavigationService.ReplaceRoot(ServiceContainer.GetInstance<LoginViewModel>(), false);
         }
