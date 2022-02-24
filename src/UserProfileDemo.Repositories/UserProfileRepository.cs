@@ -155,8 +155,11 @@ namespace UserProfileDemo.Repositories
 
         public override void Dispose()
         {
-            // Remove the live query change listener
-            _userQuery.RemoveChangeListener(_userQueryToken);
+            if (_userQuery != null)
+            {
+                // Remove the live query change listener
+                _userQuery.RemoveChangeListener(_userQueryToken);
+            }
 
             base.Dispose();
         }
