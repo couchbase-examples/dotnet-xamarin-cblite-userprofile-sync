@@ -9,18 +9,14 @@ using Couchbase.Lite.Sync;
 using CouchbaseLabs.MVVM;
 using UserProfileDemo.Core;
 using UserProfileDemo.Repositories.Services;
+using Xamarin.Essentials;
 
 namespace UserProfileDemo.Repositories
 {
     public class DatabaseManager : IDisposable
     {
-        // Note: User 'localhost' when using a simulator
-        readonly Uri _remoteSyncUrl = new Uri("ws://localhost:4984");
-
-        // Note: Use '10.0.2.2' when using an emulator
-        //readonly Uri _remoteSyncUrl = new Uri("ws://10.0.2.2:4984");
-
-        readonly string _databaseName;
+        private readonly Uri _remoteSyncUrl;
+        private readonly string _databaseName;
 
         Replicator _replicator;
         ListenerToken _replicatorListenerToken;
@@ -30,6 +26,17 @@ namespace UserProfileDemo.Repositories
         public DatabaseManager(string databaseName)
         {
             _databaseName = databaseName;
+
+            if (DeviceInfo.Platform == DevicePlatform.Android)
+            {
+                // Note: Use '10.0.2.2' when using an emulator
+                _remoteSyncUrl = new Uri("ws://10.0.2.2:4984");
+            }
+            else
+            {
+                // Note: User 'localhost' when using a simulator
+                _remoteSyncUrl = new Uri("ws://localhost:4984");
+            }
         }
 
         public async Task<Database> GetDatabaseAsync()

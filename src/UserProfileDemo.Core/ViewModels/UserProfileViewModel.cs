@@ -73,7 +73,7 @@ namespace UserProfileDemo.Core.ViewModels
             {
                 if (_saveCommand == null)
                 {
-                    _saveCommand = new Command(async() => await Save());
+                    _saveCommand = new Command(async () => await Save());
                 }
 
                 return _saveCommand;
@@ -122,7 +122,7 @@ namespace UserProfileDemo.Core.ViewModels
             }
         }
 
-        public UserProfileViewModel(INavigationService navigationService, 
+        public UserProfileViewModel(INavigationService navigationService,
                                     IUserProfileRepository userProfileRepository,
                                     IAlertService alertService,
                                     IMediaService mediaService) : base(navigationService)
@@ -141,25 +141,22 @@ namespace UserProfileDemo.Core.ViewModels
         {
             IsBusy = true;
 
+            await _userProfileRepository.StartReplicationForCurrentUser().ConfigureAwait(false);
+
             if (string.IsNullOrEmpty(Email))
             {
                 var userProfile = await _userProfileRepository?.GetAsync(UserProfileDocId, UpdateUserProfile);
 
                 if (userProfile == null)
                 {
-                    MainThread.BeginInvokeOnMainThread(() =>
+                    userProfile = new UserProfile
                     {
-                        userProfile = new UserProfile
-                        {
-                            Id = UserProfileDocId,
-                            Email = AppInstance.User.Username
-                        };
-                    });
+                        Id = UserProfileDocId,
+                        Email = AppInstance.User.Username
+                    };
                 }
-                else
-                {
-                    UpdateUserProfile(userProfile);
-                }
+
+                UpdateUserProfile(userProfile);
             }
 
             IsBusy = false;
