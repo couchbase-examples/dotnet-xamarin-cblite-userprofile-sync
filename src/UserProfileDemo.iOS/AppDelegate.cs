@@ -23,10 +23,6 @@ namespace UserProfileDemo.iOS
         {
             global::Xamarin.Forms.Forms.Init();
 
-            // tag::activate[]
-            //Couchbase.Lite.Support.iOS.Activate(); // removed in 3.0
-            // end::activate[]
-
             RegisterServices();
 
             LoadApplication(new App());
