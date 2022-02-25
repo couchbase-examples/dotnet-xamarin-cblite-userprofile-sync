@@ -154,9 +154,8 @@ namespace UserProfileDemo.Core.ViewModels
                         Id = UserProfileDocId,
                         Email = AppInstance.User.Username
                     };
+                    UpdateUserProfile(userProfile);
                 }
-
-                UpdateUserProfile(userProfile);
             }
 
             IsBusy = false;
