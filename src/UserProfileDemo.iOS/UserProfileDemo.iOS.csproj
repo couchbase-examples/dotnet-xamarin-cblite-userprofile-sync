@@ -193,18 +193,22 @@
     <ProjectReference Include="..\UserProfileDemo\UserProfileDemo.csproj">
       <Project>{BD1E66EC-28F3-4404-97C5-F7AB7CD019F8}</Project>
       <Name>UserProfileDemo</Name>
+      <ReferenceSourceTarget></ReferenceSourceTarget>
     </ProjectReference>
     <ProjectReference Include="..\UserProfileDemo.Core\UserProfileDemo.Core.csproj">
       <Project>{CF306A96-4534-4EB5-B18E-66F42884B1B8}</Project>
       <Name>UserProfileDemo.Core</Name>
+      <ReferenceSourceTarget></ReferenceSourceTarget>
     </ProjectReference>
     <ProjectReference Include="..\UserProfileDemo.Repositories\UserProfileDemo.Repositories.csproj">
       <Project>{D99B097D-E0B6-41CB-ADD7-838B7D818164}</Project>
       <Name>UserProfileDemo.Repositories</Name>
+      <ReferenceSourceTarget></ReferenceSourceTarget>
     </ProjectReference>
     <ProjectReference Include="..\CouchbaseLabs.MVVM\CouchbaseLabs.MVVM.csproj">
       <Project>{8645DB4A-3AC6-4F0C-A67B-B3DD8321CC0D}</Project>
       <Name>CouchbaseLabs.MVVM</Name>
+      <ReferenceSourceTarget></ReferenceSourceTarget>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
