@@ -32,27 +32,28 @@ namespace UserProfileDemo.UITests
             Login(TestData.TESTUSER1, TestData.TESTPASSWORD);
 
             //ACT
-            FillProfile(TestData.TESTNAME, TestData.TESTADDRESS);
+            FillProfile(TestData.TESTUSER1, TestData.TESTNAME, TestData.TESTADDRESS);
             app.WaitForElement(c => c.Marked(TestHelper.SIGNOUTBUTTON));
             app.Tap(c => c.Marked(TestHelper.SIGNOUTBUTTON));
 
             //ASSERT
             //log into the second test user to clear fields and make sure form is reset
             Login(TestData.TESTUSER2, TestData.TESTPASSWORD);
-            ValidateProfileValues("", "");
+            ValidateProfileValues(TestData.TESTUSER2, "", "");
             app.WaitForElement(c => c.Marked(TestHelper.SIGNOUTBUTTON));
             app.Tap(c => c.Marked(TestHelper.SIGNOUTBUTTON));
 
             //log in as original user and validate values are set
             Login(TestData.TESTUSER1, TestData.TESTPASSWORD);
-            ValidateProfileValues(TestData.TESTNAME, TestData.TESTADDRESS);
+            ValidateProfileValues(TestData.TESTUSER1, TestData.TESTNAME, TestData.TESTADDRESS);
             app.WaitForElement(c => c.Marked(TestHelper.SIGNOUTBUTTON));
             app.Tap(c => c.Marked(TestHelper.SIGNOUTBUTTON));
         }
 
-        private void ValidateProfileValues(string fullName, string address)
+        private void ValidateProfileValues(string email, string fullName, string address)
         {
             app.WaitForElement(c => c.Text(TestHelper.PROFILEHEADER));
+            app.WaitForElement(c => c.Text(email));
 
             var nameValue = app.Query(c => c.Marked(TestHelper.NAMEFIELD)).FirstOrDefault().Text;
             var addressValue = app.Query(c => c.Marked(TestHelper.ADDRESSFIELD)).FirstOrDefault().Text;
@@ -60,10 +61,10 @@ namespace UserProfileDemo.UITests
             Assert.AreEqual(address, addressValue);
         }
 
-        private void FillProfile(string fullName, string address)
+        private void FillProfile(string email, string fullName, string address)
         {
             app.WaitForElement(c => c.Text(TestHelper.PROFILEHEADER));
-
+            app.WaitForElement(c => c.Text(email));
             app.Screenshot("Your Profile Before");
             app.ClearText(c => c.Marked(TestHelper.NAMEFIELD));
             app.DismissKeyboard();

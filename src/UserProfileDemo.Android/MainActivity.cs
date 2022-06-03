@@ -26,7 +26,9 @@ namespace UserProfileDemo.Droid
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
 
             Plugin.CurrentActivity.CrossCurrentActivity.Current.Init(this, savedInstanceState);
-
+#if ENABLE_TEST_CLOUD
+            Xamarin.Calabash.Start();
+#endif
             // tag::activate[]
             Couchbase.Lite.Support.Droid.Activate(this);
             // end::activate[]

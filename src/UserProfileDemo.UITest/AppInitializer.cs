@@ -20,14 +20,14 @@ namespace UserProfileDemo.UITests
                     case PlatformID.Win32Windows:
                         {
                             path = path.Replace(@"file:\", "");
-                            path = path.Replace(@"\UserProfileDemo.UITests\bin\Debug", "");
+                            path = path.Replace(@"\UserProfileDemo.UITest\bin\Debug", "");
                             path = $"{path}\\UserProfileDemo.Android\\bin\\debug\\com.couchbase.userprofiledemo.apk";
                             break;
                         }
                     default:
                         {
                             path = path.Replace(@"file:", "");
-                            path = path.Replace(@"UserProfileDemo.UITests/bin/Debug", "");
+                            path = path.Replace(@"UserProfileDemo.UITest/bin/Debug", "");
                             path = $"{path}UserProfileDemo.Android/bin/debug/com.couchbase.userprofiledemo.apk";
                             break;
                         }

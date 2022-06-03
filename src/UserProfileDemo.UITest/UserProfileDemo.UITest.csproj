@@ -8,6 +8,7 @@
     <RootNamespace>UserProfileDemo.UITest</RootNamespace>
     <AssemblyName>UserProfileDemo.UITest</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <ReleaseVersion>3.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
